@@ -1,0 +1,26 @@
+@extends('meridien::layouts.metronic')
+@section('title', 'KanBan de Pessoas')
+@section('content')
+    @include('meridien::partials.kt_subheader', [
+      'breadcrumb' => [
+        '#' => 'Lista de Pessoas'
+      ],
+      'buttons' => [
+        route('admin.users.create') => [
+          'label' => 'Nova Pessoa',
+          'icon' => 'fa fa-plus'
+        ]
+      ]
+    ])
+
+    <div class="kt-container  kt-container--fluid  kt-grid__item kt-grid__item--fluid">
+        @kanban()
+        @slot('title')
+            Forbidden
+        @endslot
+        @endkanban
+    </div>
+
+@endsection
+
+@include('meridien::users.partials.kt_aside')

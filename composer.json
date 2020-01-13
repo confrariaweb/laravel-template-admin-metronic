@@ -1,0 +1,32 @@
+{
+    "name": "confrariaweb/laravel-template-admin-metronic",
+    "description": "Metronic template pack",
+    "keywords": [
+        "template",
+        "metronic",
+        "framework",
+        "laravel"
+    ],
+    "license": "MIT",
+    "type": "package",
+    "authors": [
+        {
+            "name": "Rafael Zingano",
+            "email": "confrariaweb@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "ConfrariaWeb\\TemplateAdminMetronic\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "ConfrariaWeb\\TemplateAdminMetronic\\Providers\\TemplateAdminMetronicServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev"
+}

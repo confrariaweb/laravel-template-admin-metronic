@@ -1,0 +1,131 @@
+@extends('meridien::layouts.metronic')
+@section('title', 'Kanban de Pessoas')
+@section('content')
+  @include('meridien::partials.kt_subheader', [
+    'breadcrumb' => [
+      '#' => 'Lista de Pessoas'
+    ],
+    'btns' => [
+      route('admin.users.create') => [
+        'label' => 'Nova Pessoa',
+        'icon' => 'fa fa-plus'
+      ]
+    ]
+  ])
+  <div class="kt-container  kt-container--fluid  kt-grid__item kt-grid__item--fluid">
+
+
+          <div class="row" id="kt_sortable_portlets">
+
+              @foreach($steps as $step)
+
+              <div class="col kanban-col" step_id="{{ $step->id }}">
+                <h5 class="title">{{ $step->name }}</h5>
+
+                  @foreach($step->users as $user)
+                      <div class="kt-portlet kt-portlet--mobile kt-portlet--sortable" user_id="{{ $user->id }}">
+                          <div class="kt-portlet__head">
+                              <div class="kt-portlet__head-label">
+                                  <h6 class="kt-portlet__head-title">
+                                      <a href="{{ route('admin.users.show', $user->id) }}"> {{ $user->name }}</a>
+                                  </h6>
+                              </div>
+                          </div>
+                          <div class="kt-portlet__body">
+                              <div class="form-group form-group-xs row">
+                                  <label class="col-4 col-form-label">
+                                      {!! $user->tasks()->exists()? '<a href="' . route('admin.tasks.show', $user->tasks->first()->id) . '">' . $user->tasks->first()->type->name . '</a>' : '' !!}
+                                  </label>
+                                  <div class="col-8">
+                                      <span class="form-control-plaintext kt-font-bolder">
+                                          {{ $user->tasks()->exists()? $user->tasks->first()->datetime->format('d/m/Y') : 'Sem tarefas' }}
+                                      </span>
+                                  </div>
+                              </div>
+
+                              @if($step->id == $lastStep->id)
+                                  <div class="form-group form-group-xs row">
+                                      <div class="col-12">
+                                      @includeIf('meridien::partials.modal_new_plan')
+                                      </div>
+                                  </div>
+                              @endif
+
+                          </div>
+                      </div>
+                  @endforeach
+
+                  <div class="kt-portlet kt-portlet--sortable-empty"> </div>
+              </div>
+
+              @endforeach
+
+
+          </div>
+
+
+  </div>
+@endsection
+
+@include('meridien::users.partials.kt_aside')
+
+@push('styles')
+    <link href="{{ asset('vendor/meridienclube/laravel-meridien/vendors/jquery/jquery-ui.bundle.css') }}" rel="stylesheet" type="text/css" />
+@endpush
+
+@push('scripts')
+    <script src="{{ asset('vendor/meridienclube/laravel-meridien/vendors/jquery/jquery-ui.bundle.js') }}" type="text/javascript"></script>
+    <script>
+        "use strict";
+        var KTPortletDraggable= {
+            init:function() {
+                $("#kt_sortable_portlets").sortable( {
+                        connectWith:".kt-portlet__head",
+                        items:".kt-portlet",
+                        opacity:.8,
+                        handle:".kt-portlet__head",
+                        coneHelperSize:!0,
+                        placeholder:"kt-portlet--sortable-placeholder",
+                        forcePlaceholderSize:!0,
+                        tolerance:"pointer",
+                        helper:"clone",
+                        tolerance:"pointer",
+                        forcePlaceholderSize:!0,
+                        helper:"clone",
+                        cancel:".kt-portlet--sortable-empty",
+                        revert:250, update:function(e, t) {
+                            t.item.prev().hasClass("kt-portlet--sortable-empty")&&t.item.prev().before(t.item)
+                        },
+                        beforeStop: function( event, ui ) {
+                            console.log(ui.item.parent().attr('step_id'));
+                            console.log(ui.item.attr('user_id'));
+
+                            $.post("{{ route('admin.users.update.step') }}",
+                            {
+                                user_id: ui.item.attr('user_id'),
+                                step_id: ui.item.parent().attr('step_id'),
+                                output: 'boolean'
+                            },
+                            function(data, status){
+                                console.log(data);
+                            });
+
+                        },
+
+                        appendTo: document.body,
+                        helper: "clone",
+                        connectWith: ".kanban-colt",
+                        containment: "#kt_sortable_portlets",
+                        scroll: false,
+                        placeholder: "kt-portlet"
+
+                    }
+                ).disableSelection();
+            }
+        };
+        jQuery(document).ready(function() {
+            KTPortletDraggable.init();
+            $( "#kt_sortable_portlets" ).disableSelection();
+        });
+    </script>
+@endpush

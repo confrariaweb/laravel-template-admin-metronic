@@ -1,0 +1,62 @@
+<div class="kt-portlet">
+    <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+            <h3 class="kt-portlet__head-title">
+                {{ trans('meridien.users.list') }}
+            </h3>
+        </div>
+        <div class="kt-portlet__head-toolbar">
+            <h5 class="kt-font-brand kt-font-bold">{{ $users->count() }} {{ trans('meridien.users') }}</h5>
+        </div>
+    </div>
+    <div class="kt-portlet__body">
+        <div class="kt-section">
+            <div class="kt-section__content">
+                <table class="table table-striped" id="listUsers">
+                    <thead>
+                    <tr>
+                        <th>{{ trans('meridien.No') }}</th>
+                        <th>{{ trans('meridien.users.last.task') }}</th>
+                        <th>{{ trans('meridien.users.name') }}</th>
+                        <th>{{ trans('meridien.users.email') }}</th>
+                        <th>{{ trans('meridien.users.roles') }}</th>
+                        <th>{{ trans('meridien.users.step') }}</th>
+                        <th>{{ trans('meridien.users.contacts') }}</th>
+                        <th width="100px"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@push('scripts')
+    <script type="text/javascript">
+        $(function () {
+
+            var table = $('#listUsers').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('admin.users.index') }}",
+                columns: [
+                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                    {data: 'last_task', name: 'last_task'},
+                    {data: 'name', name: 'name'},
+                    {data: 'email', name: 'email'},
+                    {data: 'roles', name: 'roles'},
+                    {data: 'step', name: 'step'},
+                    {data: 'contacts', name: 'contacts'},
+                    {data: 'action', name: 'action', orderable: false, searchable: false},
+                ]
+            });
+
+        });
+    </script>
+@endpush
