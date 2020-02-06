@@ -1,5 +1,6 @@
 {
     "name": "confrariaweb/laravel-template-admin-metronic",
+    "version": "dev-master",
     "description": "Metronic template pack",
     "keywords": [
         "template",
